@@ -17,7 +17,7 @@ module Stuffing
       options = args.first.kind_of?(Hash) ? args.first : args[1]
       options ||= {}
       
-      database = options[:database] || "#{File.basename(RAILS.root)}_#{RAILS.env}"
+      database = options[:database] || "#{File.basename(Rails.root)}_#{Rails.env}"
       host = options[:host] || 'localhost'
       port = options[:port] || 5984
       couchdb_id = options[:id] || ":class-:id"
