@@ -85,16 +85,16 @@ module Stuffing
         end
         
         def create_stuffing
-          couchdb.save({'_id' => couchdb_id}.merge(couchdb_content))
+          couchdb.save_doc({'_id' => couchdb_id}.merge(couchdb_content))
           get_stuffing
         end
         
         def update_stuffing
           begin
             record = couchdb_content.merge({'_id' => couchdb_id, '_rev' => couchdb_content['_rev']})
-            couchdb.save(record)
+            couchdb.save_doc(record)
           rescue RestClient::RequestFailed
-            couchdb.save(couchdb_content.merge({'_id' => couchdb_id}))
+            couchdb.save_doc(couchdb_content.merge({'_id' => couchdb_id}))
           end
           get_stuffing
         end
