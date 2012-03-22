@@ -103,6 +103,10 @@ module Stuffing
           couchdb.delete(couchdb_content)
         end
         
+        def view #(name, params, payload, &block)
+          couchdb.temp_view({}, {data}, nil)
+        end
+        
         def respond_to?(*args)
           if args.first.to_s[0,8] == "#{stuffing_method_name}" and args.first.to_s[-17,17] != '_before_type_cast'
             return true
