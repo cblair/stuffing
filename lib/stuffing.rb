@@ -103,7 +103,8 @@ module Stuffing
           couchdb.delete(couchdb_content)
         end
         
-        def view #(name, params, payload, &block)
+        def view 
+          #(name, params, payload, &block)
           couchdb.temp_view({}, {:data => "data"}, nil)
         end
         
