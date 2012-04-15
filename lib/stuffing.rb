@@ -104,8 +104,8 @@ module Stuffing
         end
         
         def view 
-          #(name, params, payload, &block)
-          #couchdb.temp_view({}, {:data => "data"}, nil)
+          d = couchdb.view "example/foo"
+          return d
         end
         
         def respond_to?(*args)
