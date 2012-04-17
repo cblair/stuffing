@@ -103,8 +103,10 @@ module Stuffing
           couchdb.delete_doc(couchdb_content)
         end
         
-        def view 
-          d = couchdb.view "example/foo"
+        #Simply passes off to couchrest view
+        def view(name)
+          #TODO: pass the rest of the parameters
+          d = couchdb.view name
           return d
         end
         
