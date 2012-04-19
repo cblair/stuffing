@@ -110,6 +110,26 @@ module Stuffing
           return d
         end
         
+        def create_simple_view(name, map)
+          couchdb.save_doc({'_id' => "_design/#{name}", 
+                                            :views => {
+                                              :view1 => {
+                                                :map => map
+                                              }
+                                            }
+                                           }
+                              )
+        end
+        
+        def view_exists(name)
+          name = "_design/#{name}"
+          begin
+            return !couchdb.get(name).empty?
+          rescue
+            return false
+          end
+        end
+        
         def respond_to?(*args)
           if args.first.to_s[0,8] == "#{stuffing_method_name}" and args.first.to_s[-17,17] != '_before_type_cast'
             return true
