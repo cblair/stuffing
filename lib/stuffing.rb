@@ -29,7 +29,8 @@ module Stuffing
         end
         
         def couchdb_content
-          #{method_name}.stringify_keys!
+          ## {method_name}.stringify_keys!
+          #{method_name}
         end
         
         def couchdb_id
