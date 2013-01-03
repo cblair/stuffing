@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'stuffing'
-  s.version     = '0.0.1'
-  s.date        = '2012-11-14'
+  s.version     = '0.0.2'
+  s.date        = '2013-01-03'
   s.summary     = "Stuffing"
   s.description = "The stuffing gem"
   s.authors     = ["Paul Campbell", "Colby Blair"]
