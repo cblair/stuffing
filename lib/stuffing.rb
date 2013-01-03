@@ -20,16 +20,26 @@ module Stuffing
       database = options[:database] || "#{File.basename(Rails.root)}_#{Rails.env}"
       host = options[:host] || 'localhost'
       port = options[:port] || 5984
+      username = options[:username] || ''
+      password = options[:password] || ''
+      https = options[:https] || false
       couchdb_id = options[:id] || ":class-:id"
-      
+
       class_eval %Q[
         def couchdb
           @connection ||= CouchRest.new(interpolate("http://#{host}:#{port}"))
-          @database ||= @connection.database!(interpolate('#{database}'))
+
+          if interpolate("#{username}") != '' and interpolate("#{password}") != ''
+            db_str = "http://" + interpolate("#{username}") + ":" + interpolate("#{password}") + '@' +  interpolate("#{host}:#{port}") + "/" + interpolate('#{database}')
+            @database ||= @connection.database!(interpolate('#{database}'))
+          else
+            @database ||= @connection.database!(interpolate('#{database}'))
+          end
         end
         
         def couchdb_content
-          #{method_name}.stringify_keys!
+          ## {method_name}.stringify_keys!
+          #{method_name}
         end
         
         def couchdb_id
