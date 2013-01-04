@@ -25,16 +25,23 @@ module Stuffing
       https = options[:https] || false
       couchdb_id = options[:id] || ":class-:id"
 
+      if https
+        proto_str = "https"
+      else
+        proto_str = "http"
+      end
+      
+      conn_str = "#{host}:#{port}"
+
       class_eval %Q[
         def couchdb
-          @connection ||= CouchRest.new(interpolate("http://#{host}:#{port}"))
-
-          if interpolate("#{username}") != '' and interpolate("#{password}") != ''
-            db_str = "http://" + interpolate("#{username}") + ":" + interpolate("#{password}") + '@' +  interpolate("#{host}:#{port}") + "/" + interpolate('#{database}')
-            @database ||= @connection.database!(interpolate('#{database}'))
+          if interpolate("#{username}") != nil and interpolate("#{password}") != nil
+            @connection ||= CouchRest.new(interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}"))
           else
-            @database ||= @connection.database!(interpolate('#{database}'))
+            @connection ||= CouchRest.new(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}"))
           end
+
+          @database ||= @connection.database!(interpolate('#{database}'))
         end
         
         def couchdb_content
