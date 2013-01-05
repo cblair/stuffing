@@ -41,6 +41,7 @@ module Stuffing
             @connection ||= CouchRest.new(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}"))
           end
 
+          logger.info "Connected to CouchDB"
           @database ||= @connection.database!(interpolate('#{database}'))
         end
         
