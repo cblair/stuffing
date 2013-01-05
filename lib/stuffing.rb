@@ -36,6 +36,8 @@ module Stuffing
       class_eval %Q[
         def couchdb
           if interpolate("#{username}") != nil and interpolate("#{password}") != nil
+            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
+            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
             return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
           else
             return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
