@@ -36,13 +36,10 @@ module Stuffing
       class_eval %Q[
         def couchdb
           if interpolate("#{username}") != nil and interpolate("#{password}") != nil
-            @connection ||= CouchRest.new(interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}"))
+            return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
           else
-            @connection ||= CouchRest.new(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}"))
+            return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
           end
-
-          logger.info "Connected to CouchDB"
-          @database ||= @connection.database!(interpolate('#{database}'))
         end
         
         def couchdb_content
