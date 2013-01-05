@@ -100,6 +100,9 @@ module Stuffing
         end
         
         def create_stuffing
+          puts "Test"
+          puts couchdb
+          puts couchdb_id
           couchdb.save_doc({'_id' => couchdb_id}.merge(couchdb_content))
           get_stuffing
         end
