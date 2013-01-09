@@ -20,8 +20,8 @@ module Stuffing
       database = options[:database] || "#{File.basename(Rails.root)}_#{Rails.env}"
       host = options[:host] || 'localhost'
       port = options[:port] || 5984
-      username = options[:username] || nil
-      password = options[:password] || nil
+      username = options[:username] || ''
+      password = options[:password] || ''
       https = options[:https] || false
       couchdb_id = options[:id] || ":class-:id"
 
@@ -35,11 +35,11 @@ module Stuffing
 
       class_eval %Q[
         def couchdb
-          if interpolate("#{username}") != nil and interpolate("#{password}") != nil
-            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
+          if interpolate("#{username}") != '' and interpolate("#{password}") != ''
             puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
             return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
           else
+            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
             return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
           end
         end
