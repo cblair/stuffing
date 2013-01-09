@@ -120,7 +120,11 @@ module Stuffing
         end
         
         def destroy_stuffing
-          couchdb.delete_doc(couchdb_content)
+          begin
+            couchdb.delete_doc(couchdb_content)
+          rescue
+            puts "WARNING: Stuffing document destroy error. Ignoring..."
+          end
         end
         
         #Simply passes off to couchrest view
