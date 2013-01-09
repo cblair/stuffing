@@ -20,8 +20,8 @@ module Stuffing
       database = options[:database] || "#{File.basename(Rails.root)}_#{Rails.env}"
       host = options[:host] || 'localhost'
       port = options[:port] || 5984
-      username = options[:username] || ''
-      password = options[:password] || ''
+      username = options[:username] || nil
+      password = options[:password] || nil
       https = options[:https] || false
       couchdb_id = options[:id] || ":class-:id"
 
