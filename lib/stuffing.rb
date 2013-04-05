@@ -35,11 +35,11 @@ module Stuffing
 
       class_eval %Q[
         def couchdb
-          if interpolate("#{username}") != nil and interpolate("#{password}") != nil
-            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
+          if interpolate("#{username}") != '' and interpolate("#{password}") != ''
             puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
             return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
           else
+            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
             return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
           end
         end
@@ -120,7 +120,11 @@ module Stuffing
         end
         
         def destroy_stuffing
-          couchdb.delete_doc(couchdb_content)
+          begin
+            couchdb.delete_doc(couchdb_content)
+          rescue
+            puts "WARNING: Stuffing document destroy error. Ignoring..."
+          end
         end
         
         #Simply passes off to couchrest view
