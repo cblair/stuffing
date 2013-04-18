@@ -111,16 +111,18 @@ module Stuffing
           return d
         end
         
-        def create_simple_view(name, map)
+        def create_simple_view(name, map, reduce)
           couchdb.save_doc({'_id' => "_design/#{name}", 
                                             :views => {
                                               :view1 => {
-                                                :map => map
+                                                :map => map,
+  					:reduce => reduce
                                               }
                                             }
                                            }
                               )
         end
+        
         
         def view_exists(name)
           name = "_design/#{name}"
