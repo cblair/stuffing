@@ -17,32 +17,41 @@ module Stuffing
       options = args.first.kind_of?(Hash) ? args.first : args[1]
       options ||= {}
       
-      database = options[:database] || "#{File.basename(Rails.root)}_#{Rails.env}"
-      host = options[:host] || 'localhost'
-      port = options[:port] || 5984
-      username = options[:username] || ''
-      password = options[:password] || ''
-      https = options[:https] || false
+      @@database = options[:database] || "#{File.basename(Rails.root)}_#{Rails.env}"
+      @@host = options[:host] || 'localhost'
+      @@port = options[:port] || 5984
+      @@username = options[:username] || ''
+      @@password = options[:password] || ''
+      @@https = options[:https] || false
       couchdb_id = options[:id] || ":class-:id"
 
-      if https
-        proto_str = "https"
+      @@proto_str = ''
+      if @@https
+        @@proto_str = "https"
       else
-        proto_str = "http"
+        @@proto_str = "http"
       end
       
-      conn_str = "#{host}:#{port}"
+      class_eval do
+	def couchdb
+          couchdb_db_conn_cache = Rails.cache.read("couchdb_db_conn")
+          if couchdb_db_conn_cache == nil
+		  if @@username != '' and @@password != ''
+		    conn_str = @@proto_str + "://" + @@username + ':' + @@password + '@' + @@host + ":" + @@port + '/' + @@database
+		    puts "Connecting to CouchDB: " + conn_str
+		  else
+		    conn_str = @@proto_str + "://" + @@host + ":" + @@port + '/' + @@database
+		    puts "Connecting to CouchDB: " + conn_str
+		  end
+                  couchdb_db_conn_cache = CouchRest.database!(conn_str)
+		  Rails.cache.write("couchdb_db_conn", couchdb_db_conn_cache)
+          end
+
+          return couchdb_db_conn_cache
+	end
+      end
 
       class_eval %Q[
-        def couchdb
-          if interpolate("#{username}") != '' and interpolate("#{password}") != ''
-            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
-            return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{username}") + ':' + interpolate("#{password}") + '@' + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
-          else
-            puts 'CouchDB connecting: ' + interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}")
-            return CouchRest.database!(interpolate("#{proto_str}") + "://" + interpolate("#{host}") + ":" + interpolate("#{port}") + '/' + interpolate("#{database}"))
-          end
-        end
         
         def couchdb_content
           ## {method_name}.stringify_keys!
@@ -134,22 +143,16 @@ module Stuffing
           return d
         end
         
-        def create_simple_view(name, map, reduce=nil)
-	  views = 	{
-			:view1 => {
-				:map => map
-		      		}
-			}
-	  if reduce != nil
-	    views = 	{
-			:view1 => {
-					:map => map,
-					:reduce => reduce
-		      		}
-			}
-	  end
-
-          couchdb.save_doc({'_id' => "_design/#{name}", :views => views })
+        def create_simple_view(name, map, reduce)
+          couchdb.save_doc({'_id' => "_design/#{name}", 
+                                            :views => {
+                                              :view1 => {
+                                                :map => map,
+  					:reduce => reduce
+                                              }
+                                            }
+                                           }
+                              )
         end
         
         def view_exists(name)
