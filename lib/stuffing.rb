@@ -10,6 +10,7 @@ module Stuffing
     def stuffing(*args)
       
       after_create :create_stuffing
+      after_save :create_stuffing
       after_update :update_stuffing
       after_destroy :destroy_stuffing
       
@@ -154,6 +155,7 @@ module Stuffing
                                            }
                               )
         end
+        
         
         def view_exists(name)
           name = "_design/#{name}"
